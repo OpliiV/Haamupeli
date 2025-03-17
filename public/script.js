@@ -1,13 +1,15 @@
-let BOARD_SIZE = 20 //Pelikentän koko
-const cellSize = calculateCellSize(); //Lasketaan ruudun koko responsiivisesti
-let board; //Kenttä tallennetaan tähän
-
+let BOARD_SIZE = 20 // Pelikentän koko
+const cellSize = calculateCellSize(); // Lasketaan ruudun koko responsiivisesti
+let board; // Kenttä tallennetaan tähän
+let player; // Pelajan muuttuja
 
 // Haetaan nappi ja lisätään tapahtumankuuntelija
 document.getElementById('new-game-btn').addEventListener('click', startGame);
 
-
-//Luodaan apufunktio joka hakee tietyn ruudun sisällön pelilaudasta
+function setCell(board, x, y, value) {
+    board[y][x] = value;
+}
+// Luodaan apufunktio joka hakee tietyn ruudun sisällön pelilaudasta
 function getCell(board, x, y) {
     return board[y][x]; //Palautetaan koordinaattien (x, y) kohdalla oleva arvo
 }
@@ -19,7 +21,7 @@ function calculateCellSize(){
     // Lasketaan pelilaudan koko, että jää hieman tilaa
     const gameBoardSize = 0.95 * screenSize;
 
-    // LAsketaan yksittäisen ruudun koko jakamalla pelilaudan koon ruutujen määrällä
+    // Lasketaan yksittäisen ruudun koko jakamalla pelilaudan koon ruutujen määrällä
     return gameBoardSize / BOARD_SIZE;
 }
 
@@ -29,7 +31,7 @@ function startGame(){
     document.getElementById('game-screen').style.display = 'block';
 
 
-    board = generateRandomBoard(); //Luo pelikenttä ja piirrä se
+    board = generateRandomBoard(); // Luo pelikenttä ja piirrä se
 
 
     drawBoard(board); // Piirretään pelikenttä HTML:n
@@ -55,15 +57,17 @@ function generateRandomBoard(){
         }
     }
 
-
+    generateObstacles(newBoard);
+    const [playerX, playerY] = randomEmptyPosotion(newBoard)
+    setCell(newBoard, playerX, playerY, "p")
     console.log(newBoard);
     return newBoard;
 }
 
 
-//Tämä funktio piirtää pelikentän
+// Tämä funktio piirtää pelikentän
 function drawBoard(board) {
-    //Haetaan HTML-elementti, johon pelikenttä lisätään
+    // Haetaan HTML-elementti, johon pelikenttä lisätään
     const gameBoard = document.getElementById('game-board');
     // Asetetaan sarakkeet ja rivit pelikentän koon mukaisesti
     gameBoard.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, 1fr)`;
@@ -79,10 +83,15 @@ function drawBoard(board) {
 
             if (getCell(board, x, y) === 'W') {
                 cell.classList.add('wall');
+            } else if (getCell(board, x, y) === "P"){ // Pelaaja lisätään ruudukkoon
+                cell.classList.add("player")
             }
+
             gameBoard.appendChild(cell);
         }
+
     }
+
 }
 
 
@@ -126,4 +135,19 @@ function placeObstacle(board, obstacle, startX, startY){
         // Sijoitetaan esteen ruutu pelikentälle suhteessa aloituspisteeseen
         board[startY + y][startX + x] = "W"
     }
+}
+
+function randomInt(min, max){
+    return Math.floor(Math.random() * ( max - min + 1)) + min
+}
+
+function randomEmptyPosotion(board){
+    x = randomInt(1, BOARD_SIZE - 2);
+    y = randomInt(1, BOARD_SIZE - 2);
+    if (getCell(board, x, y) === " "){
+        return[x, y]
+    } else {
+        randomEmptyPosotion(board);
+    }
+
 }
