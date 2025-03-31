@@ -2,7 +2,7 @@ let BOARD_SIZE = 20 //Pelikentän koko
 const cellSize = calculateCellSize(); // Lasketaan ruudun koko responsiivisesti
 let board; //Kenttä tallennetaan tähän
 let player; //muuttuja pelaajalle
-
+let ghosts = []; // Lista, johon tallennetaan kaikki ghost oliot.
 
 // Haetaan nappi ja lisätään tapahtumankuuntelija
 document.getElementById('new-game-btn').addEventListener('click', startGame);
@@ -100,6 +100,11 @@ function generateRandomBoard(){
     }
     generateObstacles(newBoard);
 
+    for (let i = 0; i < 5; i++) {
+        const [ghostX, ghostY] = randomEmptyPosition(newBoard);
+        setCell(newBoard, ghostX, ghostY, "H");
+        ghosts.push(new Ghost(ghostX, ghostY));
+    };
 
     const [playerX, playerY] = randomEmptyPosition(newBoard); // haetaan satunnainen tyhjä paikka
     setCell(newBoard, playerX, playerY, 'P'); // Asetetaan pelaaja tähän kohtaan
@@ -134,6 +139,8 @@ function drawBoard(board) {
                 cell.classList.add('wall');
             } else if (getCell(board, x, y) === 'P'){ // Pelaaja lisätään ruudukkoon
                 cell.classList.add('player'); //'P pelaaja
+            } else if (getCell(board, x, y) === "H"){
+                cell.classList.add("hornmonster");
             }
             gameBoard.appendChild(cell);
         }
@@ -239,3 +246,14 @@ class Player {
     }
 }
 
+class Ghost {
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
+    }
+}
+
+function shootAt(x, y) {
+    setCell(board, x, y, "B");
+    drawBoard(board);
+}
