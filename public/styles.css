@@ -99,3 +99,20 @@ button{
   background-image: url(images/hornmonster.png);
   background-size: cover;
 }
+
+.bullet { /*Ammuksen ulkoasu*/
+  background-color: red;
+  border-radius: 50%; /*Pyöristetään ammus*/
+  width: 100%;
+  height: 100%;
+  animation: fadeOut 0.5s ease-out;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

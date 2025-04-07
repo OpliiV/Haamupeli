@@ -35,6 +35,21 @@ document.addEventListener('keydown', (event) => {
             player.move(1, 0); // Liikuta pelaajaa yksi askel oikealle
             break;
 
+        case "w":
+            shootAt(player.x, player.y -1) // Ammutaan ylöspäin
+            break;
+
+        case "s":
+            shootAt(player.x, player.y +1) // Ammutaan alspäin
+            break;
+
+        case "a":
+            shootAt(player.x -1, player.y) // Ammutaan vasemalle
+            break;
+
+        case "d":
+            shootAt(player.x +1, player.y) // Ammutaan oikealle
+            break; 
 
     }
     event.preventDefault(); // Estetään selaimen oletustoiminnot, kuten sivun vieritys
@@ -141,6 +156,11 @@ function drawBoard(board) {
                 cell.classList.add('player'); //'P pelaaja
             } else if (getCell(board, x, y) === "H"){
                 cell.classList.add("hornmonster");
+            } else if (getCell(board, x, y) === "B"){
+                cell.classList.add("bullet")
+                setTimeout(() =>{
+                    setCell(board, x, y, " ")
+                }, 500)
             }
             gameBoard.appendChild(cell);
         }
@@ -254,6 +274,25 @@ class Ghost {
 }
 
 function shootAt(x, y) {
+    if (getCell(board, x, y) ==="W") {
+        return;
+    }
+    const ghostIndex = ghosts.findIndex(ghost => ghost.x === x && ghost.y === y);
+    if (ghostIndex !== -1) {
+        ghosts.splice(ghostIndex, 1)
+        updateScoreBoard(1);
+    }
     setCell(board, x, y, "B");
     drawBoard(board);
+    if (ghosts.length === 0) {
+        //startNextLevel();
+        setTimeout(() =>{
+            alert("Level Clear")
+        }, 500)
+        
+    }
+}
+
+function moveGhosts(){
+  const oldGhosts = ghosts.map(ghotst => ({x: ghosts.x, y: ghotst.y}));
 }
