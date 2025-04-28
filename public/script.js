@@ -4,7 +4,7 @@ let board; //Kenttä tallennetaan tähän
 let player; //muuttuja pelaajalle
 let ghosts = []; // Lista, johon tallennetaan kaikki ghost-oliot
 let ghostSpeed = 1000; // Aloitusnopeus haamuille (millisekunteina)
-
+let ghostsNum = 10; // Kummitusten määrä
 
 // Haetaan nappi ja lisätään tapahtumankuuntelija
 document.getElementById('new-game-btn').addEventListener('click', startGame);
@@ -124,7 +124,7 @@ function generateRandomBoard(){
     generateObstacles(newBoard);
 
 
-    for (let i = 0; i < 5; i++){ //Luodaan 5 haamua
+    for (let i = 0; i < ghostsNum; i++){ //Luodaan 5 haamua
         const [ghostX, ghostY] = randomEmptyPosition(newBoard); // Haetaan satunnainen tyhjä paikka kentältä
         setCell(newBoard, ghostX, ghostY, 'H'); // Asetetaan haamu 'H' pelikentän matriisiin
         ghosts.push(new Ghost(ghostX, ghostY)); // Luodaan uusi Ghost-olio ja lisätään se ghost-listaan
@@ -286,6 +286,31 @@ class Ghost {
         this.x = x;
         this.y = y;
     }
+    moveGhostTowardsPlayer(Player, board, oldGhosts){
+        let dx = player.x - this.x;
+        let dy = player.y - this.y;
+
+        let moves = [];
+        
+        if (Math.abs(dx) > Math.abs(dy)){
+            if (dx > 0) moves.push({x: this.x + 1, y: this.y})
+            else moves.push({x: this.x - 1, y: this.y})
+            if (dy > 0) moves.push({x: this.x, y: this.y + 1})
+            else moves.push({x: this.x, y: this.y - 1})
+        }else {
+            if (dy > 0) moves.push({x: this.x, y: this.y + 1})
+            else moves.push({x: this.x, y: this.y - 1})
+            if (dx > 0) moves.push({x: this.x + 1, y: this.y})
+            else moves.push({x: this.x - 1, y: this.y})
+        }
+        for(let move of moves) {
+            if (
+                (board[move.y][move.x] === " " || board[move.y][move.x] === "P") && 
+                !oldGhosts.some(h => h.x === move.x && h.y === move.y)
+            ) { return move;}
+        }
+        return{x: this.x, y: this.y}
+    }
 }
 
 
@@ -325,45 +350,31 @@ function shootAt(x, y) {
 
 
 function moveGhosts() {
-    // Tallennetaan kaikkien haamujen nykyiset sijainnit ennen kuin niitä liikutetaan
-    const oldGhosts = ghosts.map(ghost => ({ x: ghost.x, y: ghost.y}));
 
+    // Tallennetaan kaikkien haamujen nykyiset sijainnit (ennen siirtoa)
 
-    // Käydään jokainen haamu yksitellen läpi
+    const oldGhosts = ghosts.map(ghost => ({ x: ghost.x, y: ghost.y }));
+
+    // Käydään läpi jokainen haamu
+
     ghosts.forEach(ghost => {
 
+        // Lasketaan uusi sijainti, johon haamu haluaa liikkua
 
-        // Mahdolliset suunnat joihin haamu voi yrittää liikkua(ylös, alas, vasen, oikea)
-        const possibleNewPositions = [
-            { x: ghost.x, y: ghost.y - 1 }, // Ylös
-            { x: ghost.x, y: ghost.y + 1 }, //Alas
-            { x: ghost.x - 1, y: ghost.y }, // Vasen
-            { x: ghost.x + 1, y:ghost.y } // Oikea
-        ];
+        const newPosition = ghost.moveGhostTowardsPlayer(player, board, oldGhosts);
 
+        // Päivitetään haamun koordinaatit
 
-        // Poistetaan listalta suunnat, jotka menevät seinän tai kentän ulkopuolelle
-        const validNewPositions = possibleNewPositions.filter(newPosition =>
-            newPosition.x >= 0 && newPosition.x < BOARD_SIZE && //Ei mennä vasemmalta tai oikealta ulos kentästä
-            newPosition.y >= 0 && newPosition.y < BOARD_SIZE && // Ei mennä ylhäältä tai alhaalta ulos kentästä
-            board[newPosition.y][newPosition.x] === ' '         // Vain tyhjät ruudut kelpaavat
-        );
+        ghost.x = newPosition.x;
 
+        ghost.y = newPosition.y;
 
-        // Jos haamulle löytyi ainakin yksi tyhjä ruutu johon se voi mennä
-        if (validNewPositions.length > 0) {
-            // Valitaan satunnainen uusi ruutu listasta
-            const randomNewPosition = validNewPositions[Math.floor(Math.random() * validNewPositions.length)];
+        // Asetetaan uusi sijainti laudalle
 
-
-            // Päivitetään haamun sijainti uuteen paikkaan
-            ghost.x = randomNewPosition.x;
-            ghost.y = randomNewPosition.y;
-        }
-
-
-        // Merkitään haamu uuteen paikkaan pelilaudalle (asetetaan 'H')
         setCell(board, ghost.x, ghost.y, 'H');
+
+       
+
     });
 
 
