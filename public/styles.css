@@ -47,24 +47,28 @@ h3 {
   margin: 10px 10px;
 }
 
-button{
+
+button {
   background-color: black;
   color: white;
   margin-left: 20px;
   align-self: flex-start;
   padding: 20px 20px;
   font-size: 16px;
+  border-radius: 10px;
   cursor: pointer;
 }
+
 
 #game-screen {
   display: none;
 }
 
+
 #game-board {
   display: grid;
   gap: 0px;
-  background-image: url("images/background.png");
+  background-image: url('images/background.png');
   background-size: cover;
   background-position: center;
   width: fit-content;
@@ -75,6 +79,8 @@ button{
   background-color: rgba(221, 221, 221, 0.8);
 }
 
+
+/* Yleinen määrittely kaikille pelikentän ruuduille */
 .cell {
   width: 50px;
   height: 50px;
@@ -82,37 +88,52 @@ button{
   align-items: center;
   justify-content: center;
 }
-
+/* Määrittely pelikentän seinäruuduille */
 .wall {
-  background-image: url(images/wall.png);
+  background-image: url('images/wall.png');
   width: 50px;
   height: 50px;
   background-size: cover;
 }
 
+
 .player {
-  background-image: url(images/player.png);
-  background-size: cover;
+  background-image: url('images/player.png'); /* Asetetaan pelaajalle kuva */
+  background-size: cover; /*Kuva kattaa koko ruudun */
 }
+
 
 .hornmonster {
-  background-image: url(images/hornmonster.png);
-  background-size: cover;
+  background-image: url('images/hornmonster.png'); /*haamun kuva*/
+  background-size: cover; /* Skaalaa kuva siististi täyttämään ruutu */
 }
 
-.bullet { /*Ammuksen ulkoasu*/
-  background-color: red;
-  border-radius: 50%; /*Pyöristetään ammus*/
-  width: 100%;
-  height: 100%;
-  animation: fadeOut 0.5s ease-out;
-}
 
+/*Ammukset ulkoasu */
+.bullet {
+  background-color: red; /*Ammuksen väri on punainen*/
+  border-radius: 50%; /*Pyöristetään ammus ympyrän muotoon */
+  width: 100%; /*Leveys*/
+  height: 100%; /*Korkeus*/
+  animation: fadeOut 0.5s ease-out; /* Animaatio, jossa ammus haalistuu 0.5 sekunnin aikana */
+}
+/* Määritellään animaatio nimeltä fadeOut */
 @keyframes fadeOut {
-  0% {
-    opacity: 1;
+  0% {            /* Alussa animaatio on täysin näkyvä */
+      opacity: 1; /* Täysi näkyvyys */
   }
-  100% {
-    opacity: 0;
+  100% {          /* Lopussa animaatio on täysin läpinäkyvä */
+      opacity: 0; /* Ammus "häviää" ruudulta visuaalisesti */
   }
+}
+
+#score-board {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px;
+  color: white;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
 }
