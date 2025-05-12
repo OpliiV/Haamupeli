@@ -105,7 +105,7 @@ function startGame(){
         ghostInterval = setInterval(moveGhosts, ghostSpeed);
     }, 1000);
 
-    ghostsAmmount = 5;
+    
 
     // Nollataan pisteet uuden pelin alussa
     score = 0;
@@ -393,6 +393,9 @@ function endGame(){
 
     // Asetetaan peli päättyneeksi
     isGameRunning = false;
+
+    // Laittaa kummitusten määräksi 5
+    ghostsAmmount = 5;
 
     // Näytetään ilmoitus pelaajalle, että peli on ohi
     alert('Game Over! The ghost caught you!');
