@@ -6,6 +6,7 @@ let ghosts = []; // Lista, johon tallennetaan kaikki ghost-oliot
 let isGameRunning = false; // Muuttuja kertoo, onko peli käynnissä vai ei
 let ghostInterval; // Muuttujaan tallennetaan haamujen liikkeen aikaväli
 let ghostSpeed = 1000; // Aloitusnopeus haamuille (millisekunteina)
+let ghostsAmmount = 5 //Kummitustenmäärä kentällä
 let score = 0; //Pistelaskuri
 
 
@@ -164,7 +165,7 @@ function generateRandomBoard(){
     ghosts = [];
 
 
-    for (let i = 0; i < 5; i++){ //Luodaan 5 haamua
+    for (let i = 0; i < ghostsAmmount; i++){ //Luodaan 5 haamua
         const [ghostX, ghostY] = randomEmptyPosition(newBoard); // Haetaan satunnainen tyhjä paikka kentältä
         setCell(newBoard, ghostX, ghostY, 'H'); // Asetetaan haamu 'H' pelikentän matriisiin
         ghosts.push(new Ghost(ghostX, ghostY)); // Luodaan uusi Ghost-olio ja lisätään se ghost-listaan
@@ -393,7 +394,8 @@ function shootAt(x, y) {
     // Tarkistetaan, onko kaikki haamut poistettu pelistä
     if (ghosts.length === 0){
         // Jos kaikki haamut on ammuttu, siirrytään seuraavalle tasolle
-        alert('kaikki ammuttu'); //Tämä pois
+        // alert('kaikki ammuttu'); //Tämä pois
+        startNextLevel()
     }
 }
 
@@ -474,7 +476,7 @@ function startNextLevel() {
 
 
     // Näytettään pelaajalle ilmoitus siitä, että uusi taso alkaa ja haamujen nopeus kasvaa
-    alert('Level UP! Haamujen nopeus kasvaa.')
+    alert('You dwell deeper in to the dungeon.')
 
 
     // Luodaan uusi satunnainen pelikenttä, johon sijoitetaan pelaaja, haamut ja esteet
@@ -487,6 +489,7 @@ function startNextLevel() {
 
     // Tehdään haamuista nopeampia
     ghostSpeed = ghostSpeed * 0.9;
+    ghostsAmmount = ghostsAmmount + 1
 
 
     // Lopetetaan vanha setInterval, joka ohjasi haamujen liikettä aiemmalla nopeudella
