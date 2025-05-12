@@ -128,6 +128,7 @@ function startGame(){
     setTimeout(() => {
         ghostInterval = setInterval(moveGhosts, ghostSpeed);
     }, 1000);
+    ghostsAmmount = 5;
 
 
     // Nollataan pisteet uuden pelin alussa
